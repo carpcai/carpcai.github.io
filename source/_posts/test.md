@@ -1,10 +1,10 @@
 ---
 title: test
 tags: []
-originContent: ''
+originContent: test
 categories: []
 toc: false
 date: 2018-12-30 18:22:40
 ---
 
-test
+test2
