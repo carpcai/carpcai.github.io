@@ -1,10 +1,12 @@
 ---
 title: test
 tags: []
-originContent: test
+originContent: test2
 categories: []
 toc: false
 date: 2018-12-30 18:22:40
 ---
 
-test2
+
+
+测试文章，仅供参考
