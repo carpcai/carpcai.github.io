@@ -9,9 +9,9 @@ script:
   - hexo g
 
 after_script:
-  - sed -i "s/GH_TOKEN/${GH_TOKEN}/g" ./_config.yml
-  - sed -i "s/GH_TOKEN/${GH_TOKEN_CODING}/g" ./_config.yml
-  - hexo deploy
+  # - sed -i "s/GH_TOKEN/${GH_TOKEN}/g" ./_config.yml
+  # - sed -i "s/GH_TOKEN/${GH_TOKEN_CODING}/g" ./_config.yml
+  # - hexo deploy
   - cd ./public
   - git init
   - git config user.name "CarpCai"
@@ -26,4 +26,4 @@ branches:
 env:
  global:
     - GH_REF: github.com/carpcai/carpcai.github.io.git
-    - GH_REF_CODING: git.dev.tencent.com:carpcai/carpcai.coding.me.git
+    - GH_REF_CODING: git.dev.tencent.com/carpcai/carpcai.coding.me.git
