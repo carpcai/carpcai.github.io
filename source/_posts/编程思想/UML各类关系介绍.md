@@ -2,9 +2,8 @@
 title: UML各类关系介绍
 date: 2019-01-22 09:00:00
 author: CarpCai
-categories: 软件设计
+categories: 编程思想
 tags:
-  - Java
   - 面向对象编程
   - UML
 ---
