@@ -1,5 +1,8 @@
 ---
 title: 用 golang 1.11 module 做项目版本管理
+date: 2018-01-12 14:30:00
+author: carpcai
+categories: 后端
 tags:
   - go
   - module
