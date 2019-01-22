@@ -1,7 +1,7 @@
 ---
 title: 网络IO模型
 tags: []
-originContent: >+
+originContent: >-
   这篇文章由一道题开始：
 
 
@@ -40,14 +40,20 @@ originContent: >+
 
 
   ### IO多路转接技术
-      IO多路转接技术其实就是使用select、epoll等操作系统提供的系统调用来检测IO事件的各种机制。通过select、epoll等机制，我们可以很轻松的同时管理大量的网络IO连接，并且获取到处于活跃状态的连接。当其中一个或多个发生网络IO事件时，select、epoll等系统调用就会返回相应的连接，我们就可以对这些连接进行读取或写入操作，从而完成网络数据交互。
+
+
+  IO多路转接技术其实就是使用select、epoll等操作系统提供的系统调用来检测IO事件的各种机制。通过select、epoll等机制，我们可以很轻松的同时管理大量的网络IO连接，并且获取到处于活跃状态的连接。当其中一个或多个发生网络IO事件时，select、epoll等系统调用就会返回相应的连接，我们就可以对这些连接进行读取或写入操作，从而完成网络数据交互。
+
 
   ### select 工作原理
 
   select函数原型：
 
   ```
-          int select(int nfds, fd_set *readfds, fd_set *writefds,fd_set *exceptfds, struct timeval *
+
+  int select(int nfds, fd_set *readfds, fd_set *writefds,fd_set *exceptfds,
+  struct timeval *
+
   ```
 
 
@@ -78,19 +84,16 @@ originContent: >+
   指向异常描述符集的指针，如果我们关心连接的是否发生异常，需要把连接的描述符设置到异常描述符集合中。
 
 
-  ·timeout
-
+  - timeout
 
   指select愿意等待的时间。
+
 
   ```
 
   struct timeval {
-
       longtv_sec;      //秒数
-
       longtv_usec;    //微秒数
-
   }
 
   ```
@@ -174,7 +177,6 @@ originContent: >+
 
 
   还是以保姆照看一群孩子为例，在epoll机制下，保姆不再需要挨个的询问每个孩子是否需要尿尿。取而代之的是，每个孩子如果自己需要尿尿的时候，自己主动的站到事先约定好的地方，而保姆的职责就是查看事先约定好的地方是否有孩子。如果有小孩，则领着孩子去上厕所（网络事件处理）。因此，epoll的这种机制，能够高效的处理成千上万的并发连接，而且性能不会随着连接数增加而下降。
-
 categories: []
 toc: false
 date: 2019-01-22 17:18:36
@@ -230,16 +232,13 @@ select各个参数说明：
 
 指向异常描述符集的指针，如果我们关心连接的是否发生异常，需要把连接的描述符设置到异常描述符集合中。
 
-·timeout
-
+- timeout
 指select愿意等待的时间。
+
 ```
 struct timeval {
-
     longtv_sec;      //秒数
-
     longtv_usec;    //微秒数
-
 }
 ```
 一般来说，分为三种情况：
@@ -258,9 +257,7 @@ struct timeval {
 epoll函数原型：
 ```
 int epoll_create(int size);
-
 intepoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
-
 int epoll_wait(intepfd,  struct epoll_event *events, intmaxevents,  int timeout);
 ```
 
@@ -290,4 +287,3 @@ epoll是Linux内核为处理大批量文件描述符而作了改进的epoll，�
 select的调用复杂度是线性的，即O(n)。举个例子，一个保姆照看一群孩子，如果把孩子是否需要尿尿比作网络IO事件，select的作用就好比这个保姆挨个询问每个孩子：你要尿尿吗？如果孩子回答是，保姆则把孩子拎出来放到另外一个地方。当所有孩子询问完之后，保姆领着这些要尿尿的孩子去上厕所（处理网络IO事件）。
 
 还是以保姆照看一群孩子为例，在epoll机制下，保姆不再需要挨个的询问每个孩子是否需要尿尿。取而代之的是，每个孩子如果自己需要尿尿的时候，自己主动的站到事先约定好的地方，而保姆的职责就是查看事先约定好的地方是否有孩子。如果有小孩，则领着孩子去上厕所（网络事件处理）。因此，epoll的这种机制，能够高效的处理成千上万的并发连接，而且性能不会随着连接数增加而下降。
-
