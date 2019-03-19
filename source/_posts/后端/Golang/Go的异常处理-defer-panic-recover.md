@@ -1,15 +1,13 @@
 ---
 title: 'Go的异常处理 defer, panic, recover'
 tags:
-  - go
-originContent: ''
+  - Golang
 categories:
   - 后端
   - Golang
 toc: false
 date: 2019-01-12 14:33:10
 ---
-
 
 > Go语言追求简洁优雅，所以，Go语言不支持传统的 try…catch…finally 这种异常，因为Go语言的设计者们认为，将异常与控制结构混在一起会很容易使得代码变得混乱。因为开发者很容易滥用异常，甚至一个小小的错误都抛出一个异常。在Go语言中，使用多值返回来返回错误。不要用异常代替错误，更不要用来控制流程。在极个别的情况下，也就是说，遇到真正的异常的情况下（比如除数为0了）。才使用Go中引入的Exception处理：defer, panic, recover。
 
