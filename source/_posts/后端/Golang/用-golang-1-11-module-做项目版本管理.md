@@ -62,6 +62,17 @@ https://gopm.io/download
 ## go mod 命令
 这个子命令用来处理 ``` go.mod ``` 文件，上一小节我们已经见过 ``` go mod -init ``` 了。
 
+|命令|说明
+|-|-|-|
+|download|	download modules to local cache(下载依赖包)|
+|edit|	edit go.mod from tools or scripts（编辑go.mod|
+|graph|	print module requirement graph (打印模块依赖图)|
+|init|	initialize new module in current directory（在当前目录初始化mod）|
+|tidy|	add missing and remove unused modules(拉取缺少的模块，移除不用的模块)|
+|vendor|	make vendored copy of dependencies(将依赖复制到vendor下)|
+|verify|	verify dependencies have expected content (验证依赖是否正确）|
+|why|	explain why packages or modules are needed(解释为什么需要依赖)|
+
 - ```go mod -fmt```
 格式化 go.mod文件。
 

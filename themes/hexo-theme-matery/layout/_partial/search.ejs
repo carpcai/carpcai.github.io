@@ -2,15 +2,17 @@
 <div id="searchModal" class="modal">
     <div class="modal-content">
         <div class="search-header">
-            <span class="title"><%= __('search') %></span>
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;<%= __('search') %></span>
             <input type="search" id="searchInput" name="s" placeholder="<%= __('searchTip') %>"
-                   class="search-input" autofocus="">
+                   class="search-input">
         </div>
         <div id="searchResult"></div>
     </div>
 </div>
 
-<script src="/js/search.js"></script>
+<script src="<%- theme.jsDelivr.url %>/js/search.js"></script>
 <script type="text/javascript">
-    searchFunc("<%= config.root %>" + "search.xml", 'searchInput', 'searchResult');
+$(function () {
+    searchFunc("<%- theme.jsDelivr.url %><%= config.root %>" + "search.xml", 'searchInput', 'searchResult');
+});
 </script>
