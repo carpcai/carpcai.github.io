@@ -86,7 +86,7 @@ deploy:
   type: git
   # 下方的GH_TOKEN会被.travis.yml中sed命令替换
   repository: 
-    github: https://GH_TOKEN@github.com/gaoyoubo/blog.mspring.org.git,master
+    github: https://GH_TOKEN@github.com/github/carpcai.github.io.git,master
     coding: https://GH_TOKEN_CODING@git.dev.tencent.com/carpcai/carpcai.coding.me.git
   branch: master
 
