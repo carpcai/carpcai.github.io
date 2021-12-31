@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 残志
-subtitle: 残志
+title: 蔡立堉的博客
+subtitle: 蔡立堉【Carp Choi】的博客
 description: 梦迷过桃叶渡 流光一晌踟蹰
-keywords: Carp Cai Blog
-author: Carp Cai
+keywords: Carp Choi Blog
+author: Carp Choi
 language: CN
 timezone:
 
@@ -85,7 +85,7 @@ theme: hexo-theme-matery
 deploy:
   type: git
   # 下方的GH_TOKEN会被.travis.yml中sed命令替换
-  repository: 
+  repository:
     github: https://GH_TOKEN@github.com/github/carpcai.github.io.git,master
     coding: https://GH_TOKEN_CODING@git.dev.tencent.com/carpcai/carpcai.coding.me.git
   branch: master
