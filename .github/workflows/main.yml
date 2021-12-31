@@ -9,7 +9,7 @@ on:
 env:
   GIT_USER: carpcai
   GIT_EMAIL: 563998753@qq.com
-  DEPLOY_REPO: carpcai/carp.github.io
+  DEPLOY_REPO: carpcai/carpcai.github.io
   DEPLOY_BRANCH: master
 
 jobs:
