@@ -54,5 +54,5 @@ jobs:
           npm install hexo-cli -g
       - name: Deploy hexo
         run: |
-          hexo deploy
+          hexo deploy -d
           
