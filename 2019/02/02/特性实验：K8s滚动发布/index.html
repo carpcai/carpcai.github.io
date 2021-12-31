@@ -1,0 +1,1075 @@
+<!DOCTYPE HTML>
+<html lang="CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="特性实验：K8s滚动发布, Carp Choi Blog">
+    <meta name="description" content="1、前言在当下微服务架构盛行的时代，用户希望应用程序时时刻刻都是可用，为了满足不断变化的新业务，需要不断升级更新应用程序，有时可能需要频繁的发布版本。实现”零停机”、“零感知”的持续集成(Continuous Integration)和持续">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>特性实验：K8s滚动发布 | Carp Choi&#39;s Blog</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+</head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper head-container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Carp Choi's Blog</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>Index</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>Tags</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>Categories</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>Archives</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>About</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>Contact</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>Friends</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Carp Choi's Blog</div>
+        <div class="logo-desc">
+            
+            梦迷过桃叶渡 流光一晌踟蹰
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			Index
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			Tags
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			Categories
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			Archives
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			About
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			Contact
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			Friends
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">特性实验：K8s滚动发布</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/DevOps/">
+                                <span class="chip bg-color">DevOps</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/后端/" class="post-category">
+                                后端
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    2019-02-02
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="1、前言"><a href="#1、前言" class="headerlink" title="1、前言"></a>1、前言</h2><p>在当下微服务架构盛行的时代，用户希望应用程序时时刻刻都是可用，为了满足不断变化的新业务，需要不断升级更新应用程序，有时可能需要频繁的发布版本。实现”零停机”、“零感知”的持续集成(Continuous Integration)和持续交付/部署(Continuous Delivery)应用程序，一直都是软件升级换代不得不面对的一个难题和痛点，也是一种追求的理想方式，也是DevOps诞生的目的。</p>
+<h2 id="2、滚动发布"><a href="#2、滚动发布" class="headerlink" title="2、滚动发布"></a>2、滚动发布</h2><p>把一次完整的发布过程，合理地分成多个批次，每次发布一个批次，<strong>成功后</strong>，再发布下一个批次，最终完成所有批次的发布。在整个滚动过程期间，保证始终有可用的副本在运行，从而平滑的发布新版本，实现<strong>零停机(without an outage)</strong>、用户<strong>零感知</strong>，是一种非常主流的发布方式。由于其自动化程度比较高，通常需要复杂的发布工具支撑，而k8s可以完美的胜任这个任务。 </p>
+<h2 id="3、k8s滚动更新机制"><a href="#3、k8s滚动更新机制" class="headerlink" title="3、k8s滚动更新机制"></a>3、k8s滚动更新机制</h2><p><strong>k8s创建副本应用程序的最佳方法就是部署(Deployment)，部署自动创建副本集(ReplicaSet)，副本集可以精确地控制每次替换的Pod数量，从而可以很好的实现滚动更新</strong>。具体来说，k8s每次使用一个新的副本控制器(replication controller)来替换已存在的副本控制器，从而始终使用一个新的Pod模板来替换旧的pod模板。</p>
+<blockquote>
+<p>大致步骤如下：</p>
+<ol>
+<li>创建一个新的replication controller。</li>
+<li>增加或减少pod副本数量，直到满足当前批次期望的数量。</li>
+<li>删除旧的replication controller。</li>
+</ol>
+</blockquote>
+<h2 id="4、演示"><a href="#4、演示" class="headerlink" title="4、演示"></a>4、演示</h2><blockquote>
+<p>使用kubectl更新一个已部署的应用程序，并模拟回滚。为了方便分析，将应用程序的pod副本数量设置为10。</p>
+</blockquote>
+<pre><code class="bash">$ kubectl run busy --image=busybox:1.28.4 sleep 36000000 --replicas=10
+</code></pre>
+<h3 id="4-1-发布微服务"><a href="#4-1-发布微服务" class="headerlink" title="4.1. 发布微服务"></a>4.1. 发布微服务</h3><ul>
+<li>当前服务状态查看</li>
+</ul>
+<pre><code class="bash"># 查看部署列表
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        10        10           10          5m
+
+# 查看正在运行的pod
+root@kube-aio:~# kubectl get pod | grep busy
+busy-794c95f5d7-56b6w        1/1       Running   0          5m
+busy-794c95f5d7-8ddjr        1/1       Running   0          5m
+busy-794c95f5d7-8zm8r        1/1       Running   0          5m
+busy-794c95f5d7-9hjhp        1/1       Running   0          5m
+busy-794c95f5d7-df2r2        1/1       Running   0          5m
+busy-794c95f5d7-fsn94        1/1       Running   0          5m
+busy-794c95f5d7-k4w8r        1/1       Running   0          5m
+busy-794c95f5d7-lsmgb        1/1       Running   0          5m
+busy-794c95f5d7-rg8kw        1/1       Running   0          5m
+busy-794c95f5d7-xpxxt        1/1       Running   0          5m
+
+# 通过pod描述，查看应用程序的当前映像版本
+root@kube-aio:~# kubectl describe pod busy-794c95f5d7-56b6w |grep Image
+    Image:         busybox:1.28.4
+    Image ID:      docker-pullable://busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47
+</code></pre>
+<ul>
+<li>升级镜像版本到1.29</li>
+<li>为了更清晰看到更新过程，可另开一个窗口使用<code>$ watch kubectl get deployment busy</code>实时查看变化</li>
+</ul>
+<pre><code class="bash">$ kubectl set image deployments/busy busy=busybox:1.29
+</code></pre>
+<h3 id="4-2-验证发布"><a href="#4-2-验证发布" class="headerlink" title="4.2. 验证发布"></a>4.2. 验证发布</h3><pre><code class="bash"># 检查rollout状态
+root@kube-aio:~# kubectl rollout status deployments/busy
+deployment &quot;busy&quot; successfully rolled out
+
+# 检查pod详情
+root@kube-aio:~# kubectl describe pod busy-665cdb7b-44jnt |grep Image
+    Image:         busybox:1.29
+    Image ID:      docker-pullable://busybox@sha256:cb63aa0641a885f54de20f61d152187419e8f6b159ed11a251a09d115fdff9bd
+</code></pre>
+<p>从上面可以看到，镜像已经升级到1.29版本</p>
+<h3 id="4-3-回滚发布"><a href="#4-3-回滚发布" class="headerlink" title="4.3. 回滚发布"></a>4.3. 回滚发布</h3><pre><code class="bash"># 回滚发布
+root@kube-aio:~# kubectl rollout undo deployments/busy
+deployment.apps &quot;busy&quot; 
+
+# 回滚完成
+root@kube-aio:~# kubectl rollout status deployments/busy
+deployment &quot;busy&quot; successfully rolled out
+
+# 镜像又回退到1.28.4 版本
+root@kube-aio:~# kubectl describe pod busy-794c95f5d7-4x9bn |grep Image
+    Image:         busybox:1.28.4
+    Image ID:      docker-pullable://busybox@sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47
+</code></pre>
+<p>到目前为止，整个滚动发布工作就圆满完成了！！！<br><strong>那么如果我们想回滚到指定版本呢？答案是k8s完美支持，并且还可以通过资源文件进行配置保留的历史版次量</strong>。由于篇幅有限，感兴趣的朋友，可以自己下去实战，回滚命令如下：</p>
+<pre><code class="javascript">kubectl rollout undo deployment/busy --to-revision=&lt;版次&gt;
+</code></pre>
+<h2 id="5、原理"><a href="#5、原理" class="headerlink" title="5、原理"></a>5、原理</h2><p>k8s精确地控制着整个发布过程，分批次有序地进行着滚动更新，直到把所有旧的副本全部更新到新版本。实际上，k8s是通过两个参数来精确地控制着每次滚动的pod数量：</p>
+<blockquote>
+<ul>
+<li><strong><code>maxSurge</code> 滚动更新过程中运行操作期望副本数的最大pod数，可以为绝对数值(eg：5)，但不能为0；也可以为百分数(eg：10%)。</strong></li>
+<li><strong><code>maxUnavailable</code>  滚动更新过程中不可用的最大pod数，可以为绝对数值(eg：5)，但不能为0；也可以为百分数(eg：10%)。</strong></li>
+</ul>
+</blockquote>
+<p>如果未指定这两个可选参数，则k8s会使用默认配置：  </p>
+<pre><code class="bash">root@kube-aio:~# kubectl get deploy busy -o yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: &quot;3&quot;
+  creationTimestamp: 2018-08-19T02:42:56Z
+  generation: 3
+  labels:
+    run: busy
+  name: busy
+  namespace: default
+  resourceVersion: &quot;199461&quot;
+  selfLink: /apis/extensions/v1beta1/namespaces/default/deployments/busy
+  uid: 93fde307-a359-11e8-a93b-525400c61543
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 10
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      run: busy
+  strategy:
+    rollingUpdate:
+      maxSurge: 1    # 滚动更新中最多超过预期值的 pod数
+      maxUnavailable: 1    # 滚动更新中最多不可用的 pod数
+    type: RollingUpdate
+...
+</code></pre>
+<h3 id="5-1-浅析部署概况"><a href="#5-1-浅析部署概况" class="headerlink" title="5.1. 浅析部署概况"></a>5.1. 浅析部署概况</h3><pre><code class="bash"># 初始状态
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        10        10           10          1h
+
+# 再做一遍回退
+root@kube-aio:~# kubectl rollout undo deploy busy
+deployment.apps &quot;busy&quot; 
+
+# 更新过程1
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        11        2            9           1h
+
+# 更新过程2
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        11        4            9           1h
+
+# 更新过程3
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        11        6            9           1h
+
+# 更新结束
+root@kube-aio:~# kubectl get deploy busy
+NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+busy      10        10        10           10          1h
+</code></pre>
+<blockquote>
+<ul>
+<li><code>DESIRED</code>    最终期望处于READY状态的副本数   </li>
+<li><code>CURRENT</code>   当前的副本总数    </li>
+<li><code>UP-TO-DATE</code>   当前完成更新的副本数   </li>
+<li><code>AVAILABLE</code>   当前可用的副本数     </li>
+</ul>
+</blockquote>
+<p>当前的副本总数：10(DESIRED) + 1(maxSurge) = 11，所以CURRENT为11。<br>当前可用的副本数：10(DESIRED) - 1(maxUnavailable) = 9，所以AVAILABLE为9。</p>
+<h3 id="5-2-浅析部署详情"><a href="#5-2-浅析部署详情" class="headerlink" title="5.2. 浅析部署详情"></a>5.2. 浅析部署详情</h3><pre><code class="bash">root@kube-aio:~# kubectl describe deploy busy
+Name:                   busy
+Namespace:              default
+CreationTimestamp:      Sun, 19 Aug 2018 12:27:19 +0800
+Labels:                 run=busy
+Annotations:            deployment.kubernetes.io/revision=2
+Selector:               run=busy
+Replicas:               10 desired | 10 updated | 10 total | 10 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  1 max unavailable, 1 max surge
+Pod Template:
+  Labels:  run=busy
+  Containers:
+   busy:
+    Image:      busybox:1.29
+    Port:       &lt;none&gt;
+    Host Port:  &lt;none&gt;
+    Args:
+      sleep
+      3600000
+    Environment:  &lt;none&gt;
+    Mounts:       &lt;none&gt;
+  Volumes:        &lt;none&gt;
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  &lt;none&gt;
+NewReplicaSet:   busy-84cb46955d (10/10 replicas created)
+Events:
+  Type    Reason             Age                 From                   Message
+  ----    ------             ----                ----                   -------
+  Normal  ScalingReplicaSet  1m                  deployment-controller  Scaled up replica set busy-9669c8599 to 10
+  Normal  ScalingReplicaSet  46s                 deployment-controller  Scaled up replica set busy-84cb46955d to 1
+  Normal  ScalingReplicaSet  46s                 deployment-controller  Scaled down replica set busy-9669c8599 to 9
+  Normal  ScalingReplicaSet  46s                 deployment-controller  Scaled up replica set busy-84cb46955d to 2
+  Normal  ScalingReplicaSet  43s                 deployment-controller  Scaled down replica set busy-9669c8599 to 8
+  Normal  ScalingReplicaSet  43s                 deployment-controller  Scaled up replica set busy-84cb46955d to 3
+  Normal  ScalingReplicaSet  43s                 deployment-controller  Scaled down replica set busy-9669c8599 to 7
+  Normal  ScalingReplicaSet  43s                 deployment-controller  Scaled up replica set busy-84cb46955d to 4
+  Normal  ScalingReplicaSet  40s                 deployment-controller  Scaled down replica set busy-9669c8599 to 6
+  Normal  ScalingReplicaSet  28s (x12 over 40s)  deployment-controller  (combined from similar events): Scaled down replica set busy-9669c8599 to 0
+</code></pre>
+<p>整个滚动过程是通过控制两个副本集来完成的，新的副本集：busy-84cb46955d；旧的副本集：busy-9669c8599 。<br>理想状态下的滚动过程：</p>
+<blockquote>
+<ol>
+<li>创建新副本集，并为其分配1个新版本的pod。</li>
+<li>通知旧副本集，销毁1个旧版本的pod。</li>
+<li>当旧副本销毁成功后，通知新副本集，再新增1个新版本的pod；当新副本创建成功后，通知旧副本再减少1个pod。<br>只要销毁成功，新副本集就会创造新的pod，一直循环，直到旧的副本集pod数量为0。</li>
+</ol>
+</blockquote>
+<h3 id="5-4-总结"><a href="#5-4-总结" class="headerlink" title="5.4 总结"></a>5.4 总结</h3><p><strong><code>无论理想还是不理想，k8s最终都会使应用程序全部更新到期望状态，都会始终保持最大的副本总数和可用副本总数的不变性！！！</code></strong></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        Author:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://blog.carpcai.cn" rel="external nofollow noreferrer">Carp Choi</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        Link:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://blog.carpcai.cn/2019/02/02/特性实验：K8s滚动发布/">http://blog.carpcai.cn/2019/02/02/特性实验：K8s滚动发布/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        Reprint policy:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    All articles in this blog are used except for special statements
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    reprint polocy. If reproduced, please indicate source
+                    <a href="http://blog.carpcai.cn" target="_blank">Carp Choi</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/DevOps/">
+                                    <span class="chip bg-color">DevOps</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;Previous</div>
+            <div class="card">
+                <a href="/2019/02/12/利用Helm简化Kubernetes应用部署/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="利用Helm简化Kubernetes应用部署">
+                        
+                        <span class="card-title">利用Helm简化Kubernetes应用部署</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            利用Helm简化Kubernetes应用部署
+Helm 是由 Deis 发起的一个开源工具，有助于简化部署和管理 Kubernetes 应用。
+
+
+注：阿里云Kubernetes服务已经内置提供了Helm/Chart支持，可以直接使用htt
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-02-12
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Carp Choi
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                Next&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/01/22/网络/网络IO模型/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="网络IO模型">
+                        
+                        <span class="card-title">网络IO模型</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            这篇文章由一道题开始：
+
+关于网络IO模型，下列哪一项是正确的？
+
+A.Select比Epoll更快
+B.nginx使用的是select模型
+C.apache支持select和epoll两种方式的切换
+D.epoll能支持更大的并发
+
+
+看
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-01-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Carp Choi
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2019</span>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/carpcai" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:563998753@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=563998753" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 563998753" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
+            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
