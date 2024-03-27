@@ -43,7 +43,7 @@ menu:
 # 站点运行开始时间.
 time:
   enable: false
-  year: 2019 # 年份
+  year: 2024 # 年份
   month: 06 # 月份
   date: 28 # 日期
   hour: 00 # 小时
@@ -514,7 +514,7 @@ icp:
   url: # 备案链接
   text: # 备案信息
 
-# CDN访问加速 
+# CDN访问加速
 # 第一次使用本功能，一定要先配置url，再`hexo cl&&hexo g&&hexo d`部署到GitHub的仓库，注意！必须是GitHub的仓库！
 # 如果必须要使用国内的coding或者gittee，可以采用双部署，同时将网站部署到两个仓库（其中一个必须是GitHub的仓库）
 # URL配置规则（例子如下）： https://cdn.jsdelivr.net/gh/你的GitHub用户名/你的仓库名

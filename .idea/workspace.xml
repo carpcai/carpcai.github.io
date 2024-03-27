@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="e9dbcb99-374f-4c80-85c8-666898b94958" name="Default Changelist" comment="Fixed.">
       <change beforePath="$PROJECT_DIR$/.idea/codestream.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes/hexo-theme-matery/_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/themes/hexo-theme-matery/_config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes/hexo-theme-matery/layout/_partial/footer.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/themes/hexo-theme-matery/layout/_partial/footer.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +28,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
   <component name="ProjectConfigurationFiles">
     <option name="files">
       <list>
@@ -62,14 +71,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "hexo",
+    "last_opened_file_path": "/Users/ly.cai/work/code/project/carpcai.github.io",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
@@ -83,7 +98,11 @@
       <updated>1562327045019</updated>
       <workItem from="1562327046312" duration="632000" />
       <workItem from="1640933317287" duration="744000" />
-      <workItem from="1640936731202" duration="815000" />
+      <workItem from="1640936731202" duration="1134000" />
+      <workItem from="1640939533158" duration="558000" />
+      <workItem from="1640940468199" duration="752000" />
+      <workItem from="1641261130396" duration="598000" />
+      <workItem from="1711543136375" duration="921000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed.">
       <created>1640933836966</created>
@@ -99,7 +118,42 @@
       <option name="project" value="LOCAL" />
       <updated>1640936747231</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fixed.">
+      <created>1640939382214</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1640939382214</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Fixed.">
+      <created>1640939546129</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1640939546129</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Fixed.">
+      <created>1640939680608</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1640939680608</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fixed.">
+      <created>1640939962544</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1640939962544</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fixed.">
+      <created>1640940042586</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1640940042586</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
